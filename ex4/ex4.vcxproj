@@ -115,14 +115,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ClientUtils.h" />
+    <ClInclude Include="Client.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="SocketSendRecvTools.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ClientUtils.c" />
+    <ClCompile Include="Client.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="Server.c" />
     <ClCompile Include="SocketSendRecvTools.c" />
     <ClCompile Include="Utility.c" />
   </ItemGroup>
