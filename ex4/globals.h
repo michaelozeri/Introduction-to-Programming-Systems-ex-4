@@ -22,6 +22,8 @@
 #define SERVER_MODE "Server"
 #define INPUT_MODE_FILE "file"
 #define INPUT_MODE_HUMAN "human"
+#define SEND_BUFFER_SIZE 300
+#define LOCALHOST_IP_ADRESS "127.0.0.1"
 
 //message types from HW
 #define NEW_UESR_REQUEST "NEW_UESR_REQUEST"
@@ -36,6 +38,15 @@
 #define GAME_ENDED "GAME_ENDED"
 #define SEND_MESSAGE "SEND_MESSAGE"
 #define RECEIVE_MESSAGE "RECEIVE_MESSAGE"
+
+//globals from printBoard.c
+#define RED_PLAYER 1
+#define YELLOW_PLAYER 2
+#define BOARD_HEIGHT 6
+#define BOARD_WIDTH  7
+#define BLACK  15
+#define RED    204
+#define YELLOW 238
 
 
 FILE* debugFile ;
