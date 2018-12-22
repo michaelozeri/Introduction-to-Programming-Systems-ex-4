@@ -9,9 +9,6 @@
 
 #include "SocketSendRecvTools.h"
 
-#include <stdio.h>
-#include <string.h>
-
 /*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
 
 TransferResult_t SendBuffer(const char* Buffer, int BytesToSend, SOCKET sd)

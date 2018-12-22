@@ -1,5 +1,5 @@
-#include "ClientUtils.h"
 #pragma once
+#include "Client.h"
 
 int runClientMode(int argc, char ** argv)
 {
@@ -11,6 +11,7 @@ int runClientMode(int argc, char ** argv)
 	if (!strcmp(INPUT_MODE_FILE, inputMode)) {
 		inputFile = argv[6];
 	}
+
 
 
 
