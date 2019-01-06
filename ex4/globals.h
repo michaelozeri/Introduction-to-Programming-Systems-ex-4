@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <tchar.h>
+#include <stdbool.h>
+#include <WS2tcpip.h>
 
 #define DEBUG_ON 1
 #define CLIENT_MODE "Client"
@@ -51,9 +53,10 @@
 
 FILE* debugFile ;
 char* debugFilePath;
-char* serverPort;
+int serverPort;
 char* username;
 char* inputMode;
 char* inputFile;
-
 SOCKET mainClientSocket;
+char userBuffer[SEND_BUFFER_SIZE];
+int MyUserNumber;

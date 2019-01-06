@@ -2,8 +2,9 @@
 
 #include "Utility.h"
 
-int debugToFile(char * log_msg, int msgLen)
+int debugToFile(char * log_msg)
 {
+	int msgLen = strlen(log_msg);
 	errno_t err;
 	int retval;
 	if (debugFile == NULL) {
@@ -67,8 +68,26 @@ int sendMsg3Param(char * msgType, char * param1, char * param2, char * param3)
 	return sendMsg2Param(msgType, param1, param2new);
 }
 
+int recvMsg(char ** inputBuffer)
+{
+	//TODO: finish here how to split message?
+	ReceiveString(&userBuffer, mainClientSocket);
+	return 0;
+}
 
-void PrintBoard(int board[][BOARD_WIDTH])
+int recvUserNumber(char * inputBuffer)
+{
+	char** messageAndParams;
+	recvMsg(&inputBuffer);
+	split(inputBuffer, ':', &messageAndParams);//split messege and params
+	if (strcmp(messageAndParams[0], NEW_USER_ACCEPTED)) {
+		debugToFile("ERROR: should be new user accepted\n");
+		return -1;
+	}
+	return atoi(messageAndParams[1]);
+}
+
+void PrintBoard(int board[BOARD_HEIGHT][BOARD_WIDTH])
 {
 	//This handle allows us to change the console's color
 	HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -104,4 +123,65 @@ void PrintBoard(int board[][BOARD_WIDTH])
 	//free the handle
 	CloseHandle(hConsole);
 
+}
+
+int split(const char *str, char c, char ***arr)
+{
+	int count = 1;
+	int token_len = 1;
+	int i = 0;
+	char *p;
+	char *t;
+
+	p = str;
+	while (*p != '\0')
+	{
+		if (*p == c)
+			count++;
+		p++;
+	}
+
+	*arr = (char**)malloc(sizeof(char*) * count);
+	if (*arr == NULL)
+		exit(1);
+
+	p = str;
+	while (*p != '\0')
+	{
+		if (*p == c)
+		{
+			(*arr)[i] = (char*)malloc(sizeof(char) * token_len);
+			if ((*arr)[i] == NULL)
+				exit(1);
+
+			token_len = 0;
+			i++;
+		}
+		p++;
+		token_len++;
+	}
+	(*arr)[i] = (char*)malloc(sizeof(char) * token_len);
+	if ((*arr)[i] == NULL)
+		exit(1);
+
+	i = 0;
+	p = str;
+	t = ((*arr)[i]);
+	while (*p != '\0')
+	{
+		if (*p != c && *p != '\0')
+		{
+			*t = *p;
+			t++;
+		}
+		else
+		{
+			*t = '\0';
+			i++;
+			t = ((*arr)[i]);
+		}
+		p++;
+	}
+
+	return count;
 }
