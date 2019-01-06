@@ -9,3 +9,7 @@ SOCKADDR_IN clientService;
  void runClientInHumanMode();
 
  void runClientInFileMode();
+
+ int recvBoardAndPrint();
+
+ bool recvTurnSwithAndCheckisMyTurn();
