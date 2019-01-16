@@ -50,6 +50,9 @@
 #define RED    204
 #define YELLOW 238
 
+#define NOT_YOUR_TURN "Not your turn"
+#define GAME_NOT_STARTED "Game has not started"
+#define IILEGAL_MOVE "Illegal move"
 
 FILE* debugFile ;
 char* debugFilePath;
