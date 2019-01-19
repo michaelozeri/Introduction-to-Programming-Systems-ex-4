@@ -5,7 +5,6 @@ Semaphore * CreateClientsSemaphore()
 {
     Semaphore * sem = (Semaphore*)malloc(sizeof(Semaphore));
     if (sem == NULL) {
-        error("creating semaphore struct");
         return NULL;
     }
     //create semaphore with size of outputbuffer
@@ -14,7 +13,6 @@ Semaphore * CreateClientsSemaphore()
         SEMAPHORE_INITIAL_VALUE,
         2, "bufferQueueSemaphore");
     if (sem->handle == NULL) {
-        error("creating semaphore handle");
         return NULL;
     }
 
@@ -25,14 +23,11 @@ Thread * defineNewThread(SOCKET socket, int clientNumber, char* name, char* play
 {
     Thread* newThread = (Thread*)malloc(sizeof(Thread));
     if (newThread == NULL) {
-        error("Memory allocation failed for new Thread");
         return NULL;
     }
 
     newThread->threadParams = (ThreadParams*)malloc(sizeof(ThreadParams));
     if (newThread->threadParams == NULL) {
-        error("Memory allocation failed for thread parameters");
-        FreeThread(newThread);
         return NULL;
     }
 
@@ -43,8 +38,6 @@ Thread * defineNewThread(SOCKET socket, int clientNumber, char* name, char* play
 
     newThread->Id = (DWORD*)malloc(sizeof(DWORD));
     if (newThread->Id == NULL) {
-        error("Memory allocation failed for thread ID");
-        FreeThread(newThread);
         return NULL;
     }
 
@@ -55,7 +48,6 @@ Mutex * CreateClientsMutex(char* name)
 {
     Mutex* mutex = (Mutex*)malloc(sizeof(Mutex));
     if (mutex == NULL) {
-        error("allcating mem for mutex failed");
         return NULL;
     }
 
@@ -64,7 +56,6 @@ Mutex * CreateClientsMutex(char* name)
             false, // thread calling create Mutex should be its initial owner?
             NULL); // its possible to use null but we need to make sure not to lose handle
     if (mutex->handle == NULL) {
-        error("creating mutex failed");
         return NULL;
     }
     
@@ -77,7 +68,6 @@ BoardView* InitializeBoardView()
     BoardView* board = (BoardView*)malloc(sizeof(BoardView));
     if (board == NULL)
     {
-        printf("malloc failed");
         return NULL;
     }
 
@@ -227,12 +217,10 @@ int SendMsg(char * msgType, char * param, SOCKET socket)
     }
 
     if (retVal < 0) {
-        printf("ERROR: failed writing into send buffer\n");
         return -1;
     }
     transferResult = SendBuffer(buffer, retVal, socket);
     if (transferResult != TRNS_SUCCEEDED) {
-        printf("ERROR: failed to send message\n");
         return -1;
     }
     return 0;

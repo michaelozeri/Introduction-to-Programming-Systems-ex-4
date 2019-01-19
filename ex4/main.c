@@ -1,3 +1,8 @@
+/*
+* This is main file for HW 4 
+* Created by omer machluf and michael ozeri
+*/
+
 #pragma once
 
 #include "globals.h"
