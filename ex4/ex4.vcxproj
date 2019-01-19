@@ -76,6 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,6 +119,7 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="Server.h" />
+    <ClInclude Include="ServerUtility.h" />
     <ClInclude Include="SocketSendRecvTools.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
@@ -125,6 +127,7 @@
     <ClCompile Include="Client.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Server.c" />
+    <ClCompile Include="ServerUtility.c" />
     <ClCompile Include="SocketSendRecvTools.c" />
     <ClCompile Include="Utility.c" />
   </ItemGroup>

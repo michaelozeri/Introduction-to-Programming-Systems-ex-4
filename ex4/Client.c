@@ -7,12 +7,10 @@ int runClientMode(int argc, char ** argv)
 	//can assume that number of arguments are given ok from HW
 	debugFilePath = argv[2];
 	serverPort = atoi(argv[3]);
-	username = argv[4];
-	inputMode = argv[5];
+	inputMode = argv[4];
 	if (!strcmp(INPUT_MODE_FILE, inputMode)) {
-		inputFile = argv[6];
+		inputFilePath = argv[5];
 	}
-
 	//Call the socket function and return its value to the m_socket variable. 
 	// For this application, use the Internet address family, streaming sockets, and the TCP/IP protocol.
 
@@ -21,6 +19,9 @@ int runClientMode(int argc, char ** argv)
 	// Check for errors to ensure that the socket is a valid socket.
 	if (mainClientSocket == INVALID_SOCKET) {
 		printf("Error at socket(): %ld\n", WSAGetLastError());
+		char errorMessageBuffer[SEND_BUFFER_SIZE];
+		sprintf_s(errorMessageBuffer, SEND_BUFFER_SIZE, "Failed connecting to server on 127.0.0.1:%d.Exiting", serverPort);
+		debugToFile(errorMessageBuffer);
 		WSACleanup();
 		return -1;
 	}
@@ -47,19 +48,24 @@ int runClientMode(int argc, char ** argv)
 	}
 
 
-	closesocket(mainClientSocket);//TODO: should i close the socket like this?
+	closesocket(mainClientSocket);
 
 	return 0;
 }
 
 void runClientInHumanMode()
 {
+	debugToFile("Please insert username:\n");
+	scanf_s("%s", username);
 	debugToFile("Sending username to Server\n");
 	if (!sendMsg(NEW_USER_REQUEST, username)) {
 		debugToFile("ERROR: sending username to server\n");
 	}
 	//server - NEW_USER_ACCEPTED and sent client number
 	MyUserNumber = recvUserNumber(userBuffer);
+	if (MyUserNumber < 0) {
+		return;
+	}
 	debugToFile("user number is:");
 	debugToFile(MyUserNumber);
 	//server - GAME_STARTED
@@ -72,10 +78,10 @@ void runClientInHumanMode()
 		if (recvTurnSwithAndCheckisMyTurn()) {
 			printf("Please insert your play:\n");
 			//user - PLAY_REQUEST
-			int columnToInsert;
-			scanf_s("%d", &columnToInsert);
+			char playUser;
+			scanf_s("%s", &playUser); //TODO: change to "play <column name>" where column 0-6 left ==0
 			char playBuf[10];
-			sendMsg(PLAY_REQUEST, _itoa_s(columnToInsert, playBuf, 10,10));
+			sendMsg(PLAY_REQUEST, _itoa_s(playUser, playBuf, 10, 10));
 			//server - PLAY_ACCEPTED
 			recvPlayAccepted(userBuffer);
 		}
@@ -94,7 +100,40 @@ void receiveAndVerifyGameStarted()
 
 void runClientInFileMode()
 {
-	//TODO: finish
+	inputFile = fopen(inputFilePath, 'r');
+	debugToFile("Reading insert username:\n");
+	//read line for username
+	debugToFile("Sending username to Server\n");
+	if (!sendMsg(NEW_USER_REQUEST, username)) {
+		debugToFile("ERROR: sending username to server\n");
+	}
+	//server - NEW_USER_ACCEPTED and sent client number
+	MyUserNumber = recvUserNumber(userBuffer);
+	if (MyUserNumber < 0) {
+		return;
+	}
+	debugToFile("user number is:");
+	debugToFile(MyUserNumber);
+	//server - GAME_STARTED
+	receiveAndVerifyGameStarted();
+	//server - BOARD_VIEW
+	recvBoardAndPrint();
+	bool shouldExit = false;
+	while (!shouldExit) {
+		//server - TURN_SWITCH
+		if (recvTurnSwithAndCheckisMyTurn()) {
+			printf("Please insert your play:\n");
+			//user - PLAY_REQUEST
+			char playUser;
+			scanf_s("%s", &playUser); //TODO: change to "play <column name>" where column 0-6 left ==0
+			char playBuf[10];
+			sendMsg(PLAY_REQUEST, _itoa_s(playUser, playBuf, 10, 10));
+			//server - PLAY_ACCEPTED
+			recvPlayAccepted(userBuffer);
+		}
+		//server - BOARD_VIEW
+		recvBoardAndPrint();
+	}
 }
 
 int recvBoardAndPrint()

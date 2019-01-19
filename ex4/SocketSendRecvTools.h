@@ -13,7 +13,11 @@
 
 #include "globals.h"
 
-typedef enum { TRNS_FAILED, TRNS_DISCONNECTED, TRNS_SUCCEEDED } TransferResult_t;
+typedef enum  transfer_result_t{
+	TRNS_FAILED,
+	TRNS_DISCONNECTED,
+	TRNS_SUCCEEDED
+} TransferResult_t;
 
 /**
  * SendBuffer() uses a socket to send a buffer.

@@ -86,8 +86,14 @@ int recvUserNumber(char * inputBuffer)
 	recvMsg(&inputBuffer);
 	split(inputBuffer, ':', &messageAndParams);//split messege and params
 	if (strcmp(messageAndParams[0], NEW_USER_ACCEPTED)) {
-		debugToFile("ERROR: should be new user accepted\n");
-		return -1;
+		if (strcmp(messageAndParams[0], NEW_USER_DECLINED)) {
+			debugToFile("ERROR: expected user acccepted / declined");
+			return -1;
+		}
+		else {
+			debugToFile("ERROR: Request to join was refused\n");
+			return -1;
+		}
 	}
 	return atoi(messageAndParams[1]);
 }
@@ -97,11 +103,18 @@ bool recvPlayAccepted(char * inputBuffer)
 	char** messageAndParams;
 	recvMsg(&inputBuffer);
 	split(inputBuffer, ':', &messageAndParams);//split messege and params
-	if (strcmp(messageAndParams[0], PLAY_ACCEPTED)) {
-		debugToFile("ERROR: should be play accepted\n");
+	if (!strcmp(messageAndParams[0], PLAY_ACCEPTED)) {
+		debugToFile("Well played\n");
+		return true;
+	}
+	if (!strcmp(messageAndParams[0], PLAY_DECLINED)) { //TODO: check iilegal move and retray if msg == iilegal move
+		char msg[SEND_BUFFER_SIZE];
+		sprintf_s(msg, SEND_BUFFER_SIZE, "Error: %s",messageAndParams[1]);
+		debugToFile(msg);
 		return false;
 	}
-	return true;
+	
+	return false;
 }
 
 void PrintBoard(int board[BOARD_HEIGHT][BOARD_WIDTH])

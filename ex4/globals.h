@@ -58,9 +58,10 @@
 FILE* debugFile ;
 char* debugFilePath;
 int serverPort;
-char* username;
+char username[SEND_BUFFER_SIZE];
 char* inputMode;
-char* inputFile;
+char* inputFilePath;
+FILE* inputFile;
 SOCKET mainClientSocket;
 char userBuffer[SEND_BUFFER_SIZE];
 int MyUserNumber;

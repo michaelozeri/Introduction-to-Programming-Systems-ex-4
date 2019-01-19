@@ -21,6 +21,36 @@ Semaphore * CreateClientsSemaphore()
     return sem;
 }
 
+Thread * defineNewThread(SOCKET socket, int clientNumber, char* name, char* playerName)
+{
+    Thread* newThread = (Thread*)malloc(sizeof(Thread));
+    if (newThread == NULL) {
+        error("Memory allocation failed for new Thread");
+        return NULL;
+    }
+
+    newThread->threadParams = (ThreadParams*)malloc(sizeof(ThreadParams));
+    if (newThread->threadParams == NULL) {
+        error("Memory allocation failed for thread parameters");
+        FreeThread(newThread);
+        return NULL;
+    }
+
+    //set parameters of thread
+    newThread->threadParams->socket = socket;
+    newThread->threadParams->clientNumber = clientNumber;
+    newThread->threadParams->name = name;
+
+    newThread->Id = (DWORD*)malloc(sizeof(DWORD));
+    if (newThread->Id == NULL) {
+        error("Memory allocation failed for thread ID");
+        FreeThread(newThread);
+        return NULL;
+    }
+
+    return newThread;
+}
+
 Mutex * CreateClientsMutex(char* name)
 {
     Mutex* mutex = (Mutex*)malloc(sizeof(Mutex));

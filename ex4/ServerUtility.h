@@ -11,6 +11,42 @@ typedef struct Semaphore {
     HANDLE handle;
 }Semaphore;
 
+/* ThreadParams is a struct representing the params given to a command thread
+*	Members:
+*			Command- the command to run by the process of the thread
+*			ResultsPath - the path to the output file created by the process
+*			ExpectedResultPath- the path to the expected results file to compare with the actual output file created by the processs
+*			ReturnCode - the code returned by the thread.
+*/
+typedef struct ThreadParams
+{
+    SOCKET socket;
+    int clientNumber;
+    char* name;
+    char* playerName;
+} ThreadParams;
+
+
+/* Thread is a struct representing a new thread
+*	Members:
+*			Id - thread id
+*			Handle - thread handle
+*			WaitCode - the code we got from waiting on the thread
+*			ExitCode- the exit code of the thread
+*			ReturnValue - the value returned by the last function done on the thread
+*			p_thread_params - the arguments for the thread
+*/
+typedef struct Thread {
+    HANDLE Handle;
+    DWORD* Id;
+    DWORD WaitCode;
+    LPTHREAD_START_ROUTINE Function;
+    ThreadParams *threadParams;
+} Thread;
+    
+
+Thread * defineNewThread(SOCKET socket, int clientNumber, char* name);
+
 /*
 struct representing the mutex has a handle to the mutex
 */
@@ -37,6 +73,8 @@ returns:
 Semaphore* if sucess else NULL
 */
 Semaphore* CreateClientsSemaphore();
+
+
 
 /*
 this function inserts new play to board
@@ -97,4 +135,4 @@ YELLOW if yellow wins
 0 if no result yet and board is not full
 -1 if errors
 */
-int GetBoardWinner(BoardView* board)
+int GetBoardWinner(BoardView* board);
