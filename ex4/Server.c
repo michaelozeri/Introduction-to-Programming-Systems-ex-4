@@ -1,10 +1,9 @@
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#include "stdbool.h"
-#include "sys/types.h"
-#include "in.h"
-#include "pthread.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <pthread.h>
+#include <sys/types.h>
 #include "globals.h"
 #include "ServerUtility.h"
 #include "SocketSendRecvTools.h"
@@ -254,7 +253,7 @@ int runServerMode(int argc, char**argv) {
                 {
                     break;
                 }
-                if (!strcmp(messageS[0], NEW_UESR_REQUEST))
+                if (!strcmp(messageS[0], NEW_USER_REQUEST))
                 {
                     SendMsg(NEW_USER_DECLINED, NULL, new_socket_fd);
                     break;

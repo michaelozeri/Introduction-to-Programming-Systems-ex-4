@@ -56,6 +56,14 @@ if an error occurs the function prints the error and exits
 */
 int recvUserNumber(char* inputBuffer);
 
+/*
+* this function verifies we received play accepted from the server
+* parameters:
+* inputBuffer - the buffer to recieve the message from the server
+* returns: true if ok else false
+*/
+bool recvPlayAccepted(char * inputBuffer);
+
 /***********************************************************
 * This function prints the board, and uses O as the holes.
 * The disks are presented by red or yellow backgrounds.

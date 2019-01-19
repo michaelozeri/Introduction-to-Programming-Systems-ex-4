@@ -55,23 +55,40 @@ int runClientMode(int argc, char ** argv)
 void runClientInHumanMode()
 {
 	debugToFile("Sending username to Server\n");
-	if (!sendMsg(NEW_UESR_REQUEST, username)) {
+	if (!sendMsg(NEW_USER_REQUEST, username)) {
 		debugToFile("ERROR: sending username to server\n");
 	}
+	//server - NEW_USER_ACCEPTED and sent client number
 	MyUserNumber = recvUserNumber(userBuffer);
-	recvMsg(&userBuffer);
-	if (strcmp(userBuffer, GAME_STARTED)) {
-		debugToFile("ERROR: should be game started\n");
-	}
+	debugToFile("user number is:");
+	debugToFile(MyUserNumber);
+	//server - GAME_STARTED
+	receiveAndVerifyGameStarted();
+	//server - BOARD_VIEW
 	recvBoardAndPrint();
 	bool shouldExit = false;
 	while (!shouldExit) {
+		//server - TURN_SWITCH
 		if (recvTurnSwithAndCheckisMyTurn()) {
-			//TODO: finish
+			printf("Please insert your play:\n");
+			//user - PLAY_REQUEST
+			int columnToInsert;
+			scanf_s("%d", &columnToInsert);
+			char playBuf[10];
+			sendMsg(PLAY_REQUEST, _itoa_s(columnToInsert, playBuf, 10,10));
+			//server - PLAY_ACCEPTED
+			recvPlayAccepted(userBuffer);
 		}
-		else {
+		//server - BOARD_VIEW
+		recvBoardAndPrint();
+	}
+}
 
-		}
+void receiveAndVerifyGameStarted()
+{
+	recvMsg(&userBuffer);
+	if (strcmp(userBuffer, GAME_STARTED)) {
+		debugToFile("ERROR: should be game started\n");
 	}
 }
 
@@ -107,8 +124,13 @@ bool recvTurnSwithAndCheckisMyTurn()
 	recvMsg(&userBuffer);
 	split(userBuffer, ':', &messageAndParams);//split messege and params
 	if (strcmp(messageAndParams[0], TURN_SWITCH)) {
-		debugToFile("ERROR: should receive turn switch\n");
-		return -1;
+		if (strcmp(messageAndParams[0], GAME_ENDED)) {
+			debugToFile("ERROR: should receive turn switch or game ended\n");
+			return -1;
+		}
+		else {
+			debugToFile("GAME_ENDED received from server - logging out");
+		}
 	}
 	return !strcmp(username, messageAndParams[1]);
 }
