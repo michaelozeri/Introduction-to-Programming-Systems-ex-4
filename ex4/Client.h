@@ -8,6 +8,8 @@ SOCKADDR_IN clientService;
 
  void runClientInHumanMode();
 
+ void receiveAndVerifyGameStarted();
+
  void runClientInFileMode();
 
  int recvBoardAndPrint();

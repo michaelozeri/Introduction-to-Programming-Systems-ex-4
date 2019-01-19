@@ -4,6 +4,12 @@
 
 int debugToFile(char * log_msg)
 {
+	if (!DEBUG_ON) {
+		return 0;
+	}
+	if (LOG_ALSO_TO_CONSOLE) {
+		printf("%s\n", log_msg);
+	}
 	int msgLen = strlen(log_msg);
 	errno_t err;
 	int retval;
@@ -70,8 +76,7 @@ int sendMsg3Param(char * msgType, char * param1, char * param2, char * param3)
 
 int recvMsg(char ** inputBuffer)
 {
-	//TODO: finish here how to split message?
-	ReceiveString(&userBuffer, mainClientSocket);
+	ReceiveString(inputBuffer, mainClientSocket);
 	return 0;
 }
 
@@ -85,6 +90,18 @@ int recvUserNumber(char * inputBuffer)
 		return -1;
 	}
 	return atoi(messageAndParams[1]);
+}
+
+bool recvPlayAccepted(char * inputBuffer)
+{
+	char** messageAndParams;
+	recvMsg(&inputBuffer);
+	split(inputBuffer, ':', &messageAndParams);//split messege and params
+	if (strcmp(messageAndParams[0], PLAY_ACCEPTED)) {
+		debugToFile("ERROR: should be play accepted\n");
+		return false;
+	}
+	return true;
 }
 
 void PrintBoard(int board[BOARD_HEIGHT][BOARD_WIDTH])
