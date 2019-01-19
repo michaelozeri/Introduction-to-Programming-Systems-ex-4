@@ -95,14 +95,12 @@ DWORD WINAPI clientHandler(LPVOID lpParam) {
 			split(message, ':', &messageS);
 			if (messageS == NULL)
 			{
-				print("error");
 				return -1;
 			}
 
 			if (strcmp(messageS[0], SEND_MESSAGE))
 			{
 				if (WaitForSingleObject(Message->handle, INFINITE) != WAIT_OBJECT_0) {
-					error("couldnt obtain mutex");
 					return -1;
 				}
 				if (!strcmp(tempmessage, Message->turn))
@@ -130,7 +128,6 @@ DWORD WINAPI clientHandler(LPVOID lpParam) {
 					int result = GetBoardWinner(board);
 					if (result == -1)
 					{
-						print("error");
 						return -1;
 					}
 
@@ -249,8 +246,7 @@ int runServerMode(int argc, char**argv) {
 			// Create new thread to receive messages
 			threads[numbOfConnections] = defineNewThread(new_socket_fd, numbOfConnections, names[numbOfConnections]);
 			if (threads[numbOfConnections] == NULL) {
-				error("creating new thread failed");
-				return FreeAllGlobals(-1);
+				return -1;
 			}
 
 			threads[numbOfConnections]->Function = clientHandler;
