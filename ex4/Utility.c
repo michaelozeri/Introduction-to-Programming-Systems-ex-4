@@ -17,14 +17,12 @@ int debugToFile(char * log_msg)
 		err = fopen_s(&debugFile, debugFilePath, "a"); //open with append to write to end of file
 		if (err)
 		{
-			//TODO: finish here
 			printf("Error opening file!\n");
 			exit(1);
 		}
 	}
 	retval = fprintf(debugFile, "%s\n", log_msg);
 	if (retval != msgLen) {
-		//TODO: finish here
 		printf("Error Writing to file!\n");
 		exit(1);
 	}
@@ -107,7 +105,7 @@ bool recvPlayAccepted(char * inputBuffer)
 		debugToFile("Well played\n");
 		return true;
 	}
-	if (!strcmp(messageAndParams[0], PLAY_DECLINED)) { //TODO: check iilegal move and retray if msg == iilegal move
+	if (!strcmp(messageAndParams[0], PLAY_DECLINED)) { 
 		char msg[SEND_BUFFER_SIZE];
 		sprintf_s(msg, SEND_BUFFER_SIZE, "Error: %s",messageAndParams[1]);
 		debugToFile(msg);

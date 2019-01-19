@@ -28,7 +28,7 @@ int runClientMode(int argc, char ** argv)
 
 	//Create a sockaddr_in object clientService and set  values.
 	clientService.sin_family = AF_INET;
-	InetPton(AF_INET, LOCALHOST_IP_ADRESS, &clientService.sin_addr.s_addr); //Setting the IP address to connect to - TODO:check!
+	InetPton(AF_INET, LOCALHOST_IP_ADRESS, &clientService.sin_addr.s_addr); //Setting the IP address to connect to
 	clientService.sin_port = htons(serverPort); //Setting the port to connect to.
 
 	// Call the connect function, passing the created socket and the sockaddr_in structure as parameters. 
@@ -46,7 +46,6 @@ int runClientMode(int argc, char ** argv)
 	else {
 		runClientInFileMode();
 	}
-
 
 	closesocket(mainClientSocket);
 
@@ -79,7 +78,7 @@ void runClientInHumanMode()
 			printf("Please insert your play:\n");
 			//user - PLAY_REQUEST
 			char playUser;
-			scanf_s("%s", &playUser); //TODO: change to "play <column name>" where column 0-6 left ==0
+			scanf_s("%s", &playUser); 
 			char playBuf[10];
 			sendMsg(PLAY_REQUEST, _itoa_s(playUser, playBuf, 10, 10));
 			//server - PLAY_ACCEPTED
@@ -101,6 +100,7 @@ void receiveAndVerifyGameStarted()
 void runClientInFileMode()
 {
 	inputFile = fopen(inputFilePath, 'r');
+	fgets(username, SEND_BUFFER_SIZE, inputFile);
 	debugToFile("Reading insert username:\n");
 	//read line for username
 	debugToFile("Sending username to Server\n");
@@ -124,10 +124,8 @@ void runClientInFileMode()
 		if (recvTurnSwithAndCheckisMyTurn()) {
 			printf("Please insert your play:\n");
 			//user - PLAY_REQUEST
-			char playUser;
-			scanf_s("%s", &playUser); //TODO: change to "play <column name>" where column 0-6 left ==0
-			char playBuf[10];
-			sendMsg(PLAY_REQUEST, _itoa_s(playUser, playBuf, 10, 10));
+			fgets(userBuffer, SEND_BUFFER_SIZE, inputFile);
+			sendMsg(PLAY_REQUEST, _itoa_s(userBuffer, userBuffer,SEND_BUFFER_SIZE,10));
 			//server - PLAY_ACCEPTED
 			recvPlayAccepted(userBuffer);
 		}
@@ -139,6 +137,7 @@ void runClientInFileMode()
 int recvBoardAndPrint()
 {
 	char** messageAndParams;
+	char** lines;
 	char** params;
 	int board[BOARD_HEIGHT][BOARD_WIDTH];
 	recvMsg(&userBuffer);
@@ -147,10 +146,11 @@ int recvBoardAndPrint()
 		debugToFile("ERROR: should receive board view\n");
 		return -1;
 	}
-	split(messageAndParams[1], ';', &params);
-	for (int i = 0; i < BOARD_HEIGHT; i++) {
+	split(messageAndParams[1], ';', &lines);
+	for (int i = 0; i < BOARD_HEIGHT; i++) { //number of lines
+		split(lines[i], ' ',&params);
 		for (int j = 0; j < BOARD_WIDTH; j++) {
-			board[i][j] = atoi(params[(i*BOARD_WIDTH) + j]);
+			board[i][j] = atoi(params[j]);
 		}
 	}
 	PrintBoard(board);
